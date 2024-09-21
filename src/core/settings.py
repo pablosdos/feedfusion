@@ -82,7 +82,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DEVELOPMENT
+# SWTICH – DEVELOPMENT
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -90,7 +90,7 @@ DATABASES = {
     }
 }
 
-# STAGING
+# SWTICH – STAGING
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -139,12 +139,16 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-# DEVELOPMENT
+# SWTICH – DEVELOPMENT
 STATIC_ROOT = "/Users/paulkluge/Documents/Work/Codebase/Offgridcentrum/feedfusion/src/static"
 LOCATION_OF_FINAL_FEED_FILE = "product_feed_generator/static/final-feed-file.xml"
 DEBUG = True
-# STAGING
+# SWTICH – STAGING
 # STATIC_ROOT = '/home/datafeeds/staging/src/static'
+# LOCATION_OF_FINAL_FEED_FILE = "static/final-feed-file.xml"
+# DEBUG = True
+# SWTICH – PRODUCTION
+# STATIC_ROOT = '/home/datafeeds/production/feedfusion/src/static'
 # LOCATION_OF_FINAL_FEED_FILE = "static/final-feed-file.xml"
 # DEBUG = True
 
