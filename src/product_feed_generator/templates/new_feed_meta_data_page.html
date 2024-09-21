@@ -1,0 +1,396 @@
+
+{% load i18n static customfilters %}
+
+{% block head %}
+<title>New Feed</title>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Raleway"
+      rel="stylesheet">
+<title>Product Feed Creator</title>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible"
+      content="ie=edge">
+<link rel="stylesheet"
+      href="{% static 'custom-bootstrap/custom.css' %}">
+<script src="{% static 'bootstrap-5.3.2/dist/js/bootstrap.js' %}"></script>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: #f1f1f1;
+    }
+
+    #regForm {
+        background-color: #ffffff;
+        margin: 100px auto;
+        font-family: Raleway;
+        padding: 80px;
+        width: 70%;
+        min-width: 300px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    input {
+        padding: 10px;
+        width: 100%;
+        font-size: 17px;
+        font-family: Raleway;
+        border: 1px solid #aaaaaa;
+    }
+
+    /* Mark input boxes that gets an error on validation: */
+    input.invalid {
+        background-color: #ffdddd;
+    }
+
+    /* Hide all steps by default: */
+    /* .tab {
+        display: none;
+    } */
+
+    button {
+        background-color: #04AA6D;
+        color: #ffffff;
+        border: none;
+        /* padding: 10px 20px;
+        font-size: 17px; */
+        font-family: Raleway;
+        cursor: pointer;
+    }
+
+
+    .control-button {
+        background-color: #04AA6D;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 17px;
+        font-family: Raleway;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    #prevBtn {
+        background-color: #bbbbbb;
+    }
+
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.5;
+    }
+
+    .step.active {
+        opacity: 1;
+    }
+
+    /* Mark the steps that are finished and valid: */
+    .step.finish {
+        background-color: #04AA6D;
+    }
+</style>
+
+<style>
+    .tags-input {
+        display: inline-block;
+        position: relative;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px;
+        box-shadow: 2px 2px 5px #00000033;
+        width: 100%;
+    }
+
+    .tags-input ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tags-input li {
+        display: inline-block;
+        background-color: #f2f2f2;
+        color: #333;
+        border-radius: 20px;
+        padding: 5px 10px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
+    .tags-input input[type="text"] {
+        border: none;
+        outline: none;
+        padding: 5px;
+        font-size: 14px;
+    }
+
+    .tags-input input[type="text"]:focus {
+        outline: none;
+    }
+
+    .tags-input .delete-button {
+        background-color: transparent;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        margin-left: 5px;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<body>
+
+
+    <!-- <form action=""
+          method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit"
+               name="submit_new_feed_data"
+               value="Submit">
+    </form> -->
+
+
+    <form id="regForm"
+          action=""
+          method="post">
+        {% csrf_token %}
+        <h1 style="margin-bottom: 30px;">Feed Setup Assistant</h1>
+        <!-- One "tab" for each step in the form: -->
+        <div class="tab">
+
+
+            <div class="tab"> Feed Name
+                <p> {{ form.shop_name }}</p>
+            </div>
+            <div class="tab"> Input URL – Copy/Paste to here and PRESS ENTER
+                <p> {{ form.input_url }}</p>
+            </div>
+            <div class="tab"> Input Type
+                <p> {{ form.input_type }}</p>
+            </div>
+            {{ form.available_fields }}
+            <div class="tab"> Which Fields You Want To Use?
+                <p>
+
+                    <input type="text"
+                           id="input-tag"
+                           readonly="readonly"
+                           placeholder="Enter Field Name"
+                           style="display: none;" />
+                </p>
+
+            </div>
+        </div>
+        <div id="tags-box"
+        style="height: 80px;">
+            <div class="tags-input">
+                <ul id="tags"></ul>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row"
+                 style="height: 120px; color: red;">
+                <div class="col-8">
+                    {% for error in form.shop_name.errors %}
+                    {{ error }}
+                    {% endfor %}
+                    <br>
+                    {% for error in form.input_url.errors %}
+                    Input URL: {{ error }}<br>
+                    {% endfor %}
+                    <br>
+                    {% for error in form.input_type.errors %}
+                    Input Type: {{ error }}<br>
+                    {% endfor %}
+                    <br>
+                    {% for error in form.available_fields.errors %}
+                    Feed Fields: {{ error }}
+                    {% endfor %}
+                    <br>
+                    {% if input_url_alert %}
+                    {{ input_url_alert }}
+                    {% endif %}
+                </div>
+                <div class="col-4">
+
+                    <div style="float:right;">
+                        <a href="{% url 'master_list_page' %}">
+                            <button type="button"
+                                    class="control-button"
+                                    id="prevBtn">Cancel</button></a>
+                        <button type="submit"
+                                class="control-button"
+                                id="nextBtn"
+                                name="nextBtn">Continue</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    <form id="inputUrlPhantomForm"
+          name="inputUrlPhantomForm"
+          action=""
+          method="post"
+          style="display: none;">
+        {% csrf_token %}
+        <input type="text"
+               id="inputURLInputFieldPhantomForSending"
+               name="inputURLInputFieldPhantomForSending"
+               value="">
+        <input type="text"
+               id="shopNameInputFieldPhantomForSending"
+               name="shopNameInputFieldPhantomForSending"
+               value="">
+    </form>
+
+    <script type="text/javascript">
+        const inputFieldsJsArrayFromView = {{ input_fields_js_array }};
+        // console.log(inputFieldsJsArrayFromView)
+        const tags = document.getElementById('tags');
+        const input = document.getElementById('input-tag');
+        const inputTypeInput = document.getElementById('id_input_type');
+        const submitFinalFormButton = document.getElementById('nextBtn');
+        // is being added to the tag in form class FeedForm
+        const urlInput = document.getElementById('inputURLInputField');
+        const shopNameInput = document.getElementById('id_shop_name');
+        const urlInputSendingPhantom = document.getElementById('inputURLInputFieldPhantomForSending');
+        const shopNameSendingPhantom = document.getElementById('shopNameInputFieldPhantomForSending');
+        const input_available_fields = document.getElementById('id_available_fields');
+        const tags_input_field = document.getElementsByClassName('tags-input')[0];
+        const tags_box = document.getElementById('tags-box');
+        tags_input_field.style.display = 'none';
+        input_available_fields.value = '';
+        // console.log(inputTypeInput)
+        // console.log(submitFinalFormButton)
+        // console.log(submitFinalFormButton)
+
+        // Enable Input Type Field for sending it with the form (is disabled by Django)
+        submitFinalFormButton.addEventListener('click', function (event) {
+            // event.preventDefault()
+            inputTypeInput.disabled = false;
+            // console.log(inputTypeInput.disabled)
+
+        });
+
+        function addTag(tagText) {
+            tags_input_field.style.display = 'block';
+            const tag = document.createElement('li');
+            const tagContent = tagText;
+            let isNewTagValue = true;
+            if (tagContent !== '') {
+                const liElements = document.getElementsByTagName("li");
+                Array.prototype.forEach.call(liElements, function (el) {
+                    if (el.innerHTML.split('<')[0] == tagContent) {
+                        isNewTagValue = false;
+                    }
+                });
+                if (isNewTagValue) {
+                    tag.innerText = tagContent;
+                    tag.innerHTML += '<button class="delete-button">X</button>';
+                    tags.appendChild(tag);
+                    if (input_available_fields.value == '') {
+                        input_available_fields.value = '"' + tagContent + '"';
+                    } else {
+                        input_available_fields.value = input_available_fields.value + ', "' + tagContent + '"';
+                    }
+                }
+                input.value = '';
+            }
+            tags_box.setAttribute("style","min-height:"+tags_input_field.offsetHeight+"px");
+        }
+
+
+        // check if tag elements set in 1 step before; if yes, add them
+        if (inputFieldsJsArrayFromView instanceof Array && inputFieldsJsArrayFromView.length > 0) {
+            for (let i = 0; i < inputFieldsJsArrayFromView.length; i++) {
+                addTag(inputFieldsJsArrayFromView[i]);
+            }
+        }
+
+        // suppress shop_name enter event
+        shopNameInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        });
+
+        // Input URL check
+        urlInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                urlInputSendingPhantom.value = urlInput.value
+                shopNameSendingPhantom.value = shopNameInput.value
+                document.getElementById('inputUrlPhantomForm').submit();
+
+                // event.preventDefault();
+                // var xhr = new XMLHttpRequest();
+                // xhr.open("POST", window.location.href, true);
+                // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+                // xhr.onreadystatechange = function () {
+                //     if (this.readyState) {
+                //         // var json = JSON.parse(this.responseText);
+                //         console.log(this);
+                //         console.log(this.response);
+                //         //following line would actually change the url of your window.  
+                //         window.location.href = json.success;
+                //     }
+                // };
+                // xhr.send(
+                //     'urlReceived=' + urlInput.value,
+                // );
+            }
+        });
+
+        // add tag
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addTag(input.value.trim());
+            }
+        });
+
+        // remove tag
+        tags.addEventListener('click', function (event) {
+            if (event.target.classList.contains('delete-button')) {
+                event.target.parentNode.remove();
+                const valueOfTag = event.srcElement.parentElement.innerHTML.split('<')[0];
+                let newInputText = input_available_fields.value.replace('"' + valueOfTag + '", ', '');
+                input_available_fields.value = newInputText;
+                newInputText = input_available_fields.value.replace('"' + valueOfTag + '"', '');
+                input_available_fields.value = newInputText;
+                if (input_available_fields.value == '') {
+                    tags_input_field.style.display = 'none';
+                }
+            }
+        });
+        console.log('JAVASCRIPT EXECUTED SUCCESSFULLY.')
+    </script>
+</body>
+
+{% endblock %}
